@@ -1,5 +1,19 @@
 # The Designer's Guide to Verilog-AMS — Gnucap Learning Examples
 
+## OTA conductual en Verilog-A
+
+El ejemplo del [OTA conductual](models/ota/README.md) reúne el modelo, su banco en Gnucap y las capturas originales. El amplificador tiene **70 dB** de ganancia en lazo abierto, un polo de **50 kHz** y una salida centrada en **0 V**. El banco ejecuta barridos DC y AC, además de un transitorio al escalón.
+
+Con Gnucap, ModelGen y un compilador C++ disponibles en la terminal:
+
+```bash
+make ota
+```
+
+Los datos quedan en `models/ota/results/`. Si está instalado Gnuplot, los PDF quedan en `models/ota/plots/`. Los comandos generales `make build`, `make test` y `make plot` también incluyen este ejemplo.
+
+---
+
 This repository is an educational collection of **Verilog-A** and **Verilog-AMS** examples adapted to run with **Gnucap** and **gnucap-modelgen-verilog**.
 
 The examples follow the progression and ideas presented in *The Designer's Guide to Verilog-AMS* by **Kenneth S. Kundert and Olaf Zinke**. The goal of this repository is to provide small, focused examples that can be studied, compiled, simulated, modified, and inspected independently, making it useful for **self-guided learning of analog and mixed-signal modeling**.

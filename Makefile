@@ -17,14 +17,15 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := _usage
 
-GNUGCAP_INC ?= /usr/local/include/gnucap
+GNUGCAP_INC ?= $(shell gnucap-conf --includedir 2>/dev/null || printf %s /usr/local/include/gnucap)
 GNUGCAP_VAMS ?= gnucap-mg-vams
 GNUCAP ?= gnucap
 GNUPLOT ?= gnuplot
 TIMEOUT ?= 60
 LOG_DIR ?= logs/root
 
-SOURCE_ROOTS := Chapter03 Chapter04 Chapter05 AppendixA common
+OTA_DIR := models/ota
+SOURCE_ROOTS := Chapter03 Chapter04 Chapter05 AppendixA common $(OTA_DIR)
 CLOCK_DIR := common/clock
 
 ALL_BUILD_DIRS := $(shell find $(SOURCE_ROOTS) -type f -name build.sh -printf '%h\n' 2>/dev/null | sort -u)
@@ -33,7 +34,7 @@ TEST_FILES := $(shell find $(SOURCE_ROOTS) -type f -name '*_tb.gc' 2>/dev/null |
 PLOT_FILES := $(shell find $(SOURCE_ROOTS) -type f -name '*.gp' 2>/dev/null | sort)
 WORK_DIRS := $(shell find $(SOURCE_ROOTS) -type f \( -name build.sh -o -name '*_tb.gc' -o -name '*.gp' \) -printf '%h\n' 2>/dev/null | sort -u)
 
-.PHONY: _usage build test plot clear
+.PHONY: _usage build test plot ota clear
 
 _usage:
 	@echo "Gnucap - The Designer's Guide to Verilog-AMS examples"
@@ -56,6 +57,7 @@ _usage:
 	@echo "  make build   Compile common/clock first, then all Listing modules"
 	@echo "  make test    Run all *_tb.gc testbenches"
 	@echo "  make plot    Generate plots from all .gp files"
+	@echo "  make ota     Build and run the OTA example"
 	@echo "  make clear   Remove generated .so, result .txt, plot .pdf, and log files"
 	@echo
 	@echo "Recommended order: make build -> make test -> make plot"
@@ -134,6 +136,9 @@ plot:
 	done; \
 	echo "Plot summary: PASS=$$pass FAIL=$$fail"; \
 	test $$fail -eq 0
+
+ota:
+	@cd "$(OTA_DIR)" && GNUGCAP_INC="$(GNUGCAP_INC)" GNUGCAP_VAMS="$(GNUGCAP_VAMS)" GNUCAP="$(GNUCAP)" GNUPLOT="$(GNUPLOT)" ./run.sh
 
 clear:
 	@find $(SOURCE_ROOTS) -type f -name '*.so' -delete; \

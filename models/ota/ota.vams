@@ -1,0 +1,20 @@
+`include "disciplines.vams"
+
+module ota(inp, inn, out);
+    input inp, inn;
+    output out;
+    electrical inp, inn, out;
+
+    parameter real av = 3162.27766016838 from (0:inf);
+    parameter real rin = 1.0e9 from (0:inf);
+    parameter real rout = 1.0e6 from (0:inf);
+    parameter real fp = 50.0e3 from (0:inf);
+    parameter real vos = 0.0;
+
+    analog begin
+        I(inp, inn) <+ V(inp, inn) / rin;
+        I(out) <+ V(out) / rout;
+        I(out) <+ ddt(V(out)) / (6.283185307179586 * rout * fp);
+        I(out) <+ -(av / rout) * (V(inp, inn) + vos);
+    end
+endmodule
